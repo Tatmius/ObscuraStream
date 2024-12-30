@@ -10,4 +10,4 @@ STREAM_HEIGHT = 360
 STREAM_FPS = 24
 
 # YOLOモデルのパス
-YOLO_MODEL_PATH = "../yolo11s.pt"
+YOLO_MODEL_PATH = "../models/yolo11s.pt"
