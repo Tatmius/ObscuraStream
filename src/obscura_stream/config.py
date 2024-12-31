@@ -25,7 +25,13 @@ YOLO_MODEL_PATH = "../models/yolo11s.pt"  # Path to YOLO model weights
 SHOW_BOX = False     # Whether to show detection boxes and labels
 
 # Blur settings
-BLUR_KERNEL_SIZE = 55  # Must be odd number
-BLUR_SIGMA = 30       # Higher value = more blur
-BLUR_MARGIN_TOP = 0.5     # Margin ratio for top of detection
-BLUR_MARGIN_COMMON = 0.15  # Margin ratio for left/right/bottom of detection
+BLUR_KERNEL_SIZE = 55        # Must be odd number
+BLUR_SIGMA = 30             # Higher value = more blur
+BLUR_MARGIN_TOP = 0.5       # Margin ratio for top of detection
+BLUR_MARGIN_COMMON = 0.15   # Margin ratio for left/right/bottom of detection
+BLUR_CORNER_RADIUS = 30     # Radius for rounded corners (pixels)
+
+# Fallback blur settings (when no detection)
+ENABLE_FALLBACK_BLUR = True  # Whether to apply blur when no detection
+FALLBACK_BLUR_KERNEL = 21    # Smaller kernel for subtle effect
+FALLBACK_BLUR_SIGMA = 5      # Lower sigma for lighter blur

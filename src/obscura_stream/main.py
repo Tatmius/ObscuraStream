@@ -4,12 +4,14 @@ import cv2
 from obscura_stream.utils import (
     open_camera,
     apply_blur,
+    apply_full_frame_blur,
     VirtualCam,
     send_to_virtualcam,
     draw_box,
     draw_detection_list
 )
 from obscura_stream.detection import CombinedDetector
+from obscura_stream.config import ENABLE_FALLBACK_BLUR
 
 
 def main():
@@ -27,6 +29,8 @@ def main():
             
             if detection is None:
                 detection_texts = ["No detection."]
+                if ENABLE_FALLBACK_BLUR:
+                    frame = apply_full_frame_blur(frame)
             else:
                 x1, y1, x2, y2 = detection.bbox
                 apply_blur(frame, x1, y1, x2, y2)

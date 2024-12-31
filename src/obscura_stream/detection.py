@@ -12,7 +12,7 @@ import cv2
 import mediapipe as mp
 from ultralytics import YOLO
 
-from config import YOLO_MODEL_PATH, DETECTION_MODE
+from obscura_stream.config import YOLO_MODEL_PATH, DETECTION_MODE
 
 
 class DetectionResult:

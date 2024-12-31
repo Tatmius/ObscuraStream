@@ -1,7 +1,8 @@
 import cv2
 import pyvirtualcam
-from config import CAMERA_WIDTH, CAMERA_HEIGHT, CAMERA_FPS, STREAM_WIDTH, STREAM_HEIGHT, STREAM_FPS, SHOW_BOX, BLUR_MARGIN_TOP, BLUR_MARGIN_COMMON, BLUR_KERNEL_SIZE, BLUR_SIGMA
+from obscura_stream.config import CAMERA_WIDTH, CAMERA_HEIGHT, CAMERA_FPS, STREAM_WIDTH, STREAM_HEIGHT, STREAM_FPS, SHOW_BOX, BLUR_MARGIN_TOP, BLUR_MARGIN_COMMON, BLUR_KERNEL_SIZE, BLUR_SIGMA, FALLBACK_BLUR_KERNEL, FALLBACK_BLUR_SIGMA
 import time
+import numpy as np
 
 def open_camera(width=CAMERA_WIDTH, height=CAMERA_HEIGHT, fps=CAMERA_FPS, index=0):
     """Opens and configures a webcam with specified parameters.
@@ -53,15 +54,42 @@ def open_camera(width=CAMERA_WIDTH, height=CAMERA_HEIGHT, fps=CAMERA_FPS, index=
 
     return cap
 
+def create_rounded_rectangle_mask(width, height, radius):
+    """Creates a rounded rectangle mask.
+
+    Args:
+        width (int): Mask width
+        height (int): Mask height
+        radius (int): Corner radius
+
+    Returns:
+        np.ndarray: Binary mask with rounded corners
+    """
+    mask = np.zeros((height, width), dtype=np.uint8)
+    
+    # Fill center
+    mask[radius:height-radius, :] = 255
+    mask[:, radius:width-radius] = 255
+    
+    # Draw corners
+    for corner_y, corner_x in [(radius, radius), 
+                              (radius, width-radius-1),
+                              (height-radius-1, radius),
+                              (height-radius-1, width-radius-1)]:
+        cv2.circle(mask, (corner_x, corner_y), radius, 255, -1)
+    
+    return mask
+
 def apply_blur(
     frame,
     x1, y1, x2, y2,
     top_ratio=BLUR_MARGIN_TOP,
     common_ratio=BLUR_MARGIN_COMMON,
     kernel_size=BLUR_KERNEL_SIZE,
-    sigma=BLUR_SIGMA
+    sigma=BLUR_SIGMA,
+    corner_radius=30  # 角の丸みの半径
 ):
-    """Applies Gaussian blur to a specified region with adjustable margins.
+    """Applies Gaussian blur to a specified region with rounded corners.
 
     Args:
         frame (np.ndarray): Input image frame.
@@ -70,6 +98,7 @@ def apply_blur(
         common_ratio (float): Margin ratio for other directions.
         kernel_size (int): Blur kernel size (must be odd).
         sigma (float): Blur sigma value.
+        corner_radius (int): Radius for rounded corners.
     """
     ih, iw, _ = frame.shape
     box_w = x2 - x1
@@ -86,11 +115,23 @@ def apply_blur(
     x2_m = min(iw, x2 + margin_common)
     y2_m = min(ih, y2 + margin_common)
 
-    roi = frame[y1_m:y2_m, x1_m:x2_m]
-    # Ensure kernel size is odd
+    # Extract region
+    roi = frame[y1_m:y2_m, x1_m:x2_m].copy()
+    roi_h, roi_w = roi.shape[:2]
+
+    # Create rounded rectangle mask
+    mask = create_rounded_rectangle_mask(roi_w, roi_h, corner_radius)
+    
+    # Apply blur
     kernel = kernel_size if kernel_size % 2 == 1 else kernel_size + 1
-    blurred_roi = cv2.GaussianBlur(roi, (kernel, kernel), sigma)
-    frame[y1_m:y2_m, x1_m:x2_m] = blurred_roi
+    blurred = cv2.GaussianBlur(roi, (kernel, kernel), sigma)
+
+    # Blend original and blurred based on mask
+    mask_3ch = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR) / 255.0
+    result = (blurred * mask_3ch + roi * (1 - mask_3ch)).astype(np.uint8)
+    
+    # Put back the result
+    frame[y1_m:y2_m, x1_m:x2_m] = result
 
 def draw_box(frame, x1, y1, x2, y2, color=(0, 0, 255), thickness=2, text=None):
     """Draws a bounding box with optional text label on the frame.
@@ -173,3 +214,19 @@ def send_to_virtualcam(cam, frame, target_width=STREAM_WIDTH, target_height=STRE
     rgb = cv2.cvtColor(resized, cv2.COLOR_BGR2RGB)
     cam.send(rgb)
     cam.sleep_until_next_frame()
+
+def apply_full_frame_blur(
+    frame,
+    kernel_size=FALLBACK_BLUR_KERNEL,
+    sigma=FALLBACK_BLUR_SIGMA
+):
+    """Applies a light Gaussian blur to the entire frame.
+
+    Args:
+        frame (np.ndarray): Input image frame.
+        kernel_size (int): Blur kernel size (must be odd).
+        sigma (float): Blur sigma value.
+    """
+    # Ensure kernel size is odd
+    kernel = kernel_size if kernel_size % 2 == 1 else kernel_size + 1
+    return cv2.GaussianBlur(frame, (kernel, kernel), sigma)
