@@ -136,21 +136,13 @@ For stronger privacy protection, use larger values for both parameters
 For better performance, use smaller values
 If the blur effect appears too harsh, try reducing the sigma value while keeping the kernel size
 
-#### Blur Settings Explained
-
-- **BLUR_MARGIN_TOP**: Larger value covers more area above the face (useful for hair)
-- **BLUR_MARGIN_COMMON**: Controls blur extension around sides and bottom
-- **BLUR_CORNER_RADIUS**: Higher values make blur edges rounder
-- **Fallback Settings**: Apply a subtle blur when no face/person is detected
-
 ## Troubleshooting
 
 ### Common Issues
 
 1. "Virtual camera not found"
 
-   - Make sure OBS Virtual Camera is installed and running
-   - Try restarting your computer after installing OBS
+   - Make sure OBS Virtual Camera is installed.
 
 2. "No camera detected"
 

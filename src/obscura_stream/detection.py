@@ -11,6 +11,7 @@ import numpy as np
 import cv2
 import mediapipe as mp
 from ultralytics import YOLO
+import torch
 
 from obscura_stream.config import YOLO_MODEL_PATH, DETECTION_MODE
 
@@ -40,6 +41,8 @@ class YOLODetector:
     """YOLO detector wrapper for person detection."""
     def __init__(self, model_path: str = YOLO_MODEL_PATH):
         self.model = YOLO(model_path)
+        # Check if CUDA is available
+        self.device = "cuda" if torch.cuda.is_available() else "cpu"
 
     def detect_persons(
         self,
@@ -55,7 +58,7 @@ class YOLODetector:
         Returns:
             List of DetectionResult objects for person detections
         """
-        results = self.model.predict(frame, device="cpu", verbose=False)
+        results = self.model.predict(frame, device=self.device, verbose=False)
         
         detections = []
         for box in results[0].boxes:

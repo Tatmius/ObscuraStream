@@ -625,6 +625,7 @@ dependencies = [
     { name = "numpy" },
     { name = "opencv-python" },
     { name = "pyvirtualcam" },
+    { name = "torch" },
     { name = "ultralytics" },
 ]
 
@@ -634,6 +635,7 @@ requires-dist = [
     { name = "numpy", specifier = ">=1.26.4" },
     { name = "opencv-python", specifier = ">=4.10.0.84" },
     { name = "pyvirtualcam", specifier = ">=0.12.0" },
+    { name = "torch", specifier = ">=2.5.1" },
     { name = "ultralytics", specifier = ">=8.3.55" },
 ]
 
