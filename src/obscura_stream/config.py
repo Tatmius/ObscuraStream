@@ -16,6 +16,7 @@ CAMERA_FPS = 24       # frames per second
 STREAM_WIDTH = 640    # pixels
 STREAM_HEIGHT = 360   # pixels
 STREAM_FPS = 24      # frames per second
+VIRTUAL_CAM_DEVICE = ""  # 空文字列の場合は最初に見つかったデバイスを使用
 
 # Detection settings
 DETECTION_MODE = "hybrid"  # Options: "hybrid" (face+person), "person_only"
@@ -35,3 +36,11 @@ BLUR_CORNER_RADIUS = 30     # Radius for rounded corners (pixels)
 ENABLE_FALLBACK_BLUR = True  # Whether to apply blur when no detection
 FALLBACK_BLUR_KERNEL = 21    # Smaller kernel for subtle effect
 FALLBACK_BLUR_SIGMA = 5      # Lower sigma for lighter blur
+
+# マスク設定
+MASK_TYPE = "blur"  # Options: "blur", "image"
+MASK_IMAGE_PATH = ""  # 空文字列の場合はblurを使用
+MASK_IMAGE_RESIZE_METHOD = "contain"  # Options: "contain", "cover", "stretch"
+
+# Camera selection
+PREFERRED_CAMERA_NAME = ""  # 空文字列の場合はデフォルトカメラを使用

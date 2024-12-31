@@ -3,14 +3,20 @@ name = "ObscuraStream"
 dynamic = ["version"]
 description = "Privacy-focused webcam streaming tool with face/person detection and blur"
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.10"
 dependencies = [
     "mediapipe>=0.10.20",
     "numpy>=1.26.4",
     "opencv-python>=4.10.0.84",
     "pyvirtualcam>=0.12.0",
+    "pywin32>=308",
     "torch>=2.5.1",
     "ultralytics>=8.3.55",
+]
+
+[project.optional-dependencies]
+windows = [
+    "pywin32; platform_system == 'Windows'"
 ]
 
 [project.scripts]
@@ -18,3 +24,4 @@ obscura_stream = "obscura_stream.main:main"
 
 [tool.setuptools.dynamic]
 version = {attr = "obscura_stream._version.__version__"}
+

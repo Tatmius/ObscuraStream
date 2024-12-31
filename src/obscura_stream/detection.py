@@ -43,6 +43,7 @@ class YOLODetector:
         self.model = YOLO(model_path)
         # Check if CUDA is available
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
+        print(f"Using device: {self.device}")
 
     def detect_persons(
         self,
