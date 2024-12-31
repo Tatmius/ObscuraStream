@@ -2,7 +2,8 @@
 
 ObscuraStream is a privacy-focused webcam streaming tool that automatically detects and blurs faces and people in your video feed. Perfect for online meetings, streaming, or any situation where you want to maintain privacy while using your webcam.
 
-> **Note**: This tool is designed for single-person use and works best when one person is in the camera frame.
+> [!WARNING] 
+> This tool is designed for single-person use and works only when one person is in the camera frame.
 
 ## Features
 
