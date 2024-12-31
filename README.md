@@ -2,6 +2,8 @@
 
 ObscuraStream is a privacy-focused webcam streaming tool that automatically detects and blurs faces and people in your video feed. Perfect for online meetings, streaming, or any situation where you want to maintain privacy while using your webcam.
 
+> **Note**: This tool is designed for single-person use and works best when one person is in the camera frame.
+
 ## Features
 
 - Automatic face detection with fallback to person detection
@@ -169,3 +171,4 @@ MIT License
 - [MediaPipe](https://developers.google.com/mediapipe) for face detection
 - [YOLOv8](https://docs.ultralytics.com/) for person detection
 - [OBS Project](https://obsproject.com/) for virtual camera functionality
+- [pyvirtualcam](https://github.com/letmaik/pyvirtualcam) for virtual camera streaming
