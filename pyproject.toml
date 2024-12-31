@@ -1,7 +1,7 @@
 [project]
-name = "camera-face-detection"
-version = "0.1.0"
-description = "Add your description here"
+name = "ObscuraStream"
+dynamic = ["version"]
+description = "Privacy-focused webcam streaming tool with face/person detection and blur"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
@@ -10,3 +10,9 @@ dependencies = [
     "pyvirtualcam>=0.12.0",
     "ultralytics>=8.3.55",
 ]
+
+[project.scripts]
+obscura_stream = "obscura_stream.main:main"
+
+[tool.setuptools.dynamic]
+version = {attr = "obscura_stream._version.__version__"}
